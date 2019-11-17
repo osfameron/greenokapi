@@ -1,0 +1,128 @@
+body {
+	background: #aa9;
+}
+#hive {
+  transform: rotate(-5deg);
+  --height: 16.6vmin;
+  height: 100vh;
+  width: 100vw;
+  grid-template-columns:
+    1fr
+    [l1]
+    30vmin
+    [l2]
+    10vmin
+    [r1]
+    20vmin
+    [l3]
+    10vmin
+    [r2]
+    30vmin
+    [r3]
+    1fr;
+  grid-template-rows:
+    1fr
+    [t1]
+    var(--height)
+    [t2]
+    var(--height)
+    [b1 t3]
+    var(--height)
+    [b2 t4]
+    var(--height)
+    [b3 t5]
+    var(--height)
+    [b4]
+    var(--height)
+    [b5]
+    1fr
+}
+
+article {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: courier;
+  opacity: 0.7;
+}
+article p {
+  font-size: 3.7vmin;
+  font-weight: bold;
+  background-opacity: 0.2;
+  background: rgba(255,255,0,.5);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+article:hover p {
+    color: blue;
+}
+
+@supports(display:grid) and (clip-path:polygon(0% 0%)) {
+  #hive {
+    display: grid;
+  }
+  article {
+    clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
+    opacity: 1;
+  }
+  p {
+    transform: var(--ptransform);
+  }
+}
+
+#me {
+  font-size: 1vmin;
+  font-weight: bold;
+  grid-area: t3 / l2 / b3 / r2;
+  background: yellow;
+  
+}
+
+#developer {
+  background: blue;
+  background-image: url("https://images.unsplash.com/photo-1550645612-83f5d594b671?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
+  background-size: cover;
+  grid-area: t2 / l1 / b2 / r1;
+  --ptransform: rotate(-60deg);
+}
+
+#writer {
+  background: red;
+  background-image: url("../images/book.png");
+  background-size: cover;
+  background-position: top left;
+  grid-area: t1 / l2 / b1 / r2;
+}
+
+#trainer {
+  background: green;
+  background-image: url("../images/hakim.jpg");
+  background-size: cover;
+  grid-area: t2 / l3 / b2 / r3;
+  --ptransform: rotate(60deg);
+}
+
+#printmaker {
+  background: magenta;
+  background-image: url("../images/lastretro.jpg");
+  background-size: cover;
+  grid-area: t4 / l3 / b4 / r3;
+  --ptransform: rotate(-60deg);
+}
+
+#organiser {
+  background: brown;
+  background-image: url("../images/jenn.jpg");
+  background-position: left bottom;
+  background-size: cover;
+  grid-area: t5 / l2 / b5 / r2;
+}
+
+#beekeeper {
+  background: orange;
+  background-image: url("../images/bees.jpg");
+  background-size: cover;
+  grid-area: t4 / l1 / b4 / r1;
+  --ptransform: rotate(60deg);
+}
