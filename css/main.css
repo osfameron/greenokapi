@@ -1,9 +1,53 @@
+@import url('https://fonts.googleapis.com/css?family=Acme&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Quattrocento&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+:root {
+    scroll-behavior: smooth;
+    scroll-snap-type: y proximity;
+    --hive:             rgb(255,255,0);
+    --hive-transparent: rgba(255,255,0,0.5);
+    --me:               rgb(255,200,200);
+    --developer:        rgb(50,190,240);
+    --author:           rgb(240,100,50);
+    --speaker:          rgb(240,220,50);
+    --beekeeper:        rgb(240,250,50);
+    --organiser:        rgb(220,240,190);
+    --printmaker:       rgb(190,170,120);
+    --ratio: 1.5;
+    line-height: var(--ratio);
+    --s-5: calc(var(--s-4) / var(--ratio));
+    --s-4: calc(var(--s-3) / var(--ratio));
+    --s-3: calc(var(--s-2) / var(--ratio));
+    --s-2: calc(var(--s-1) / var(--ratio));
+    --s-1: calc(var(--s0) / var(--ratio));
+    --s0: 1rem;
+    --s1: calc(var(--s0) * var(--ratio));
+    --s2: calc(var(--s1) * var(--ratio));
+    --s3: calc(var(--s2) * var(--ratio));
+    --s4: calc(var(--s3) * var(--ratio));
+    --s5: calc(var(--s4) * var(--ratio));
+}
+
 body {
 	background: #aa9;
+    margin: 0;
+    padding: 0;
+    font-family: 'Acme', sans-serif;
+}
+article p {
+    font-family: 'Quattrocento', serif;
+}
+
+#hive, article {
+    scroll-snap-align: start;
 }
 #hive {
-  transform: rotate(-5deg);
-  --height: 16.6vmin;
+  display: grid;
+  transform: rotate(-4deg);
+  --cell-y: 16.6vmin;
   height: 100vh;
   width: 100vw;
   grid-template-columns:
@@ -23,80 +67,83 @@ body {
   grid-template-rows:
     1fr
     [t1]
-    var(--height)
+    var(--cell-y)
     [t2]
-    var(--height)
+    var(--cell-y)
     [b1 t3]
-    var(--height)
+    var(--cell-y)
     [b2 t4]
-    var(--height)
+    var(--cell-y)
     [b3 t5]
-    var(--height)
+    var(--cell-y)
     [b4]
-    var(--height)
+    var(--cell-y)
     [b5]
-    1fr
+    1fr;
+  margin-bottom: 1em;
 }
 
-article {
+#hive a {
+  text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: courier;
   opacity: 0.7;
 }
-article p {
+#hive a p {
   font-size: 3.7vmin;
   font-weight: bold;
-  background-opacity: 0.2;
-  background: rgba(255,255,0,.5);
-  border-radius: 8px;
-  padding: 4px;
+  background-color: var(--hive-transparent);
+  border-radius: var(--s-1);
+  padding: var(--s-3);
 }
 
-article:hover p {
+#hive a:hover {
+  z-index: 100;
+  opacity: 1;
+  transform: scale(1.1) rotate(1deg);
+  transition: all 0.2s ease-in-out;
+}
+
+#hive a:hover p {
     color: blue;
-}
-
+} 
 @supports(display:grid) and (clip-path:polygon(0% 0%)) {
-  #hive {
-    display: grid;
-  }
-  article {
+  #hive a {
     clip-path: polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%);
-    opacity: 1;
+    iopacity: 1;
   }
   p {
     transform: var(--ptransform);
   }
 }
 
-#me {
+a#me {
+  z-index: 1;
   font-size: 1vmin;
   font-weight: bold;
   grid-area: t3 / l2 / b3 / r2;
-  background: yellow;
-  
+  background: var(--hive);
 }
 
 #developer {
-  background: blue;
+  background: var(--developer);
   background-image: url("https://images.unsplash.com/photo-1550645612-83f5d594b671?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80");
   background-size: cover;
   grid-area: t2 / l1 / b2 / r1;
   --ptransform: rotate(-60deg);
 }
 
-#writer {
-  background: red;
+#author {
+  background: var(--author);
   background-image: url("../images/book.png");
   background-size: cover;
   background-position: top left;
   grid-area: t1 / l2 / b1 / r2;
 }
 
-#trainer {
-  background: green;
+#speaker {
+  background: var(--speaker);
   background-image: url("../images/hakim.jpg");
   background-size: cover;
   grid-area: t2 / l3 / b2 / r3;
@@ -104,7 +151,7 @@ article:hover p {
 }
 
 #printmaker {
-  background: magenta;
+  background: var(--printmaker);
   background-image: url("../images/lastretro.jpg");
   background-size: cover;
   grid-area: t4 / l3 / b4 / r3;
@@ -112,7 +159,7 @@ article:hover p {
 }
 
 #organiser {
-  background: brown;
+  background: var(--organiser);
   background-image: url("../images/jenn.jpg");
   background-position: left bottom;
   background-size: cover;
@@ -120,9 +167,102 @@ article:hover p {
 }
 
 #beekeeper {
-  background: orange;
+  background: var(--beekeeper);
   background-image: url("../images/bees.jpg");
   background-size: cover;
   grid-area: t4 / l1 / b4 / r1;
   --ptransform: rotate(60deg);
+}
+
+article {
+    display: grid;
+    margin: 0;
+    width: 100%;
+    min-height: 100vh;
+    grid-gap: 0px;
+}
+#art-me {
+    padding-top: 0;
+    grid-template-columns: 2fr 3fr;
+    grid-template-rows: auto 1fr;
+    background: var(--me);
+}
+#art-me h1 {
+    margin-top: var(--s3);
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 0;
+}
+#art-me header {
+    grid-column: 2;
+    margin: 0;
+    padding: 0;
+}
+
+#contact {
+    font-family: "Courier New", Courier, monospace;
+    text-align: center;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+}
+#contact a {
+    flex: 1;
+    padding: 0; 
+    margin: 0;
+    text-decoration: none;
+}
+
+#art-me p {
+    margin: 0;
+    padding-top: 0;
+    padding-left: var(--s1);
+    padding-right: var(--s1);
+    text-align: justify;
+}
+
+#art-me img {
+    height: 100vh;
+    width: 100%;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    object-fit: cover;
+}
+
+@media only screen and (max-width: 40rem) {
+  #art-me {
+    display: block;
+  }
+  #art-me img {
+    float: left;
+    margin: 0 var(--s0);
+    height: 8em;
+    width: 8em;
+    clip-path: circle();
+    shape-outside: circle(50%);
+  }
+  #art-me p {
+    padding-left: 1em;
+  }
+}
+
+#art-developer {
+    background: var(--developer);
+}
+#art-author {
+    background: var(--author);
+}
+#art-speaker {
+    background: var(--speaker);
+}
+#art-beekeeper {
+    background: var(--beekeeper);
+}
+#art-organiser {
+    background: var(--organiser);
+}
+#art-printmaker {
+    background: var(--printmaker);
 }
