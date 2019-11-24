@@ -238,7 +238,16 @@
 <section>
     <img src="images/xml2json/xml2json-21.jpg">
     <div>
-        ...
+        <p>So let's look at this XML fragment:</p>
+<xmp><prog id="123">
+    <title>...</title>
+    <characters>...</characters>
+</prog></xmp>
+    <p>We can see that it has several distinct keys, and it's obvious that we'd want to translate it into JSON idiomatically using a dictionary:</p>
+<code><pre>{id:         123,
+ title:      ...,
+ characters: ...}</pre></code>
+    <p>Notice how both the children, like <code>title</code> and <code>characters</code> and the attributes, like <code>id</code> can be conceptually thought of as keys in JSON. Of course, in XML it's possible to have children and attributes that have the same name, so this isn't a general solution!</p>
     </div>
 </section>
 
