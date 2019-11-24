@@ -1,0 +1,467 @@
+<!doctype html>
+
+<title>Converting XML to JSON - the standard way</title>
+<link rel="stylesheet" type="text/css" href="css/slides.css">
+
+<section>
+    <img src="images/xml2json/xml2json-01.jpg">
+    <div>
+        <h1>Converting XML to JSON</h1>
+        <h3>Hakim Cassimally</h3>
+        <p>I gave this talk at an internal conference at the BBC, while working
+        in the Programme Metadata team.
+        </p>
+        <p>I tried to do the slides in PowerPoint, and at some point got
+        frustrated with its drawing capabilities, and decided it would be easier
+        to draw the slides on post-it notes and photograph them.</p>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-02.jpg">
+    <div>
+        <p>This talk is about converting XML into JSON <em>the standard way</em>. So read on to find out what that might look like.
+    </div>
+</section>
+
+
+<section>
+    <img src="images/xml2json/xml2json-03.jpg">
+    <div>
+        <p>My team used an XML-native database, and a lot of XML. I'd never
+        really loved XML beforehand, and I now, er, well, have a certain
+        grudging respect for it. Certainly, I got to grips with things I'd been
+        nervous about before, like namespaces, and learnt XPath, XQuery, and a
+        bunch of stuff about Schemas and so on.</p>
+        <p>People tend to be a bit scared of XML - certainly I used to be. Or they dismiss it as Old School - I've done that too. If you've used bad XML parsing APIs (<code>libxml</code> anyone?) or suffered <code>SOAP</code> it's very easy to assume that XML is pointlessly complex.</p>
+        <aside>(It turns out there are generally good reasons for XML being complex.)</aside>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-04.jpg">
+    <div>
+        <p>We stored documents with programme metadata - descriptions of TV and radio programmes in XML.  These documents can be quite big, certainly too big to hand-draw on a post-it note, so here is a simplified example that shows some of the kinds of concepts we work with:</p>
+
+<xmp><prog id="123">
+    <title>
+        Doctor Who & the Teletubbies
+    </title>
+    <characters>
+        <char>The Doctor</char>
+        <char>LaaLaa</char>
+    </characters>
+</prog></xmp>
+
+        <p>There are several reasons why this is a convenient format to work with.</p>
+
+    </div>
+</section>
+
+
+<section>
+    <img src="images/xml2json/xml2json-05.jpg">
+    <div>
+        <p>XML is hierarchical: we can grab the ID from the top element, or we can descend into the <code>characters</code> node, and then into each <code>character</code> in turn.</p>
+    </div>
+</section>
+
+
+<section>
+    <img src="images/xml2json/xml2json-06.jpg">
+    <div>
+        <p>XML allows us to easily store arbitrary data. In our example, we have strings and properties, some of which represent numbers. We have lists of things, and key/value dictionaries. We could also store anything that can be serialized as a string (dates for example.)</p>
+    </div>
+</section>
+
+
+<section>
+    <img src="images/xml2json/xml2json-07.jpg">
+    <div>
+        <p>A key point, XML is easy to access. If you don't work regularly with XML, or are using old, clumsy APIs to access it, you might not believe this, but modern XPath is really quite a nice language, and supplement that with XQuery and you have a lot of power.</p>
+    </div>
+</section>
+
+
+<section>
+    <img src="images/xml2json/xml2json-08.jpg">
+    <div>
+        <p>So, some examples of accessing XML data:
+        <dl>
+            <dt><code>$xml/prog/title</code></dt>
+            <dd>This XPath expression dives down into the prog element, and fetches the title</dd>
+            <dt><code>for $char in $xml/prog/chars/char</code></dt>
+            <dd>This XQuery fragment introduces a simple loop over the list of characters.
+            <aside>(XQuery is mostly-functional, so it's more like a <code>map</code> expression really, but they've called it <code>for</code> so as not to frighten Enterprise Developers)</aside></dd>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-09.jpg">
+    <div>
+        <p>Luckily, our clients like XML too!</p>
+        <p>...</p>
+    </div>
+</section>
+
+
+<section>
+    <img src="images/xml2json/xml2json-10.jpg">
+    <div>
+        <p>Oh wait, no. As I mentioned, people are generally a bit frightened of XML, and think it's Old School. Mostly our clients would rather use JSON instead. Node and React are really popular, and JSON is one of the emerging standards for data transfer.</p>
+    </div>
+</section>
+
+
+<section>
+    <img src="images/xml2json/xml2json-11.jpg">
+    <div>
+        So, in JSON, our example might have looked like:
+<code><pre>{prog: {
+    id: 123,
+    title: "Doctor Who &amp; the Teletubbies",
+    chars: [
+        "The Doctor",
+        "Laa Laa"
+    ]
+  }
+}</pre></code>
+    This has actually got many of the same features as XML has:
+    <dl>
+        <dt>Hierarchical</dt>
+        <dd>You can drill down into the list as much as you want</dd>
+        <dt>Arbitrary</dt>
+        <dd>You can store arbitrary data: strings, numbers, dictionaries, lists. There are conventions available to store other objects.</dd>
+        <dt>Easy to Access</dt>
+        <dd>Let's see some examples of this on the next slide.
+    </dl>
+        
+ </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-12.jpg">
+    <div>
+        Comparing our XML examples, JSON lets us do:
+        <dl>
+            <dt><code>$json.prog.title</code></dt>
+            <dd>This drills down each level of JSON dictionary</dd>
+            <dt><code>for (var $char of $json.prog.chars) { ... }</code>
+            <dd>This Javascript fragment loops over each character in the <code>chars</code> field in turn.</dd>
+        </dl>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-13.jpg">
+    <div>
+        So... we could insist on outputting XML, and our clients could insist on consuming JSON.  This isn't going to get us anywhere though.
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-14.jpg">
+    <div>
+        <p>The answer is obvious! We simply convert our XML to JSON, the <em>Standard Way</em> and then traipse merrily into the sunset!</p>
+        <p><strong>Hurrah!</strong></p>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-15.jpg">
+    <div>
+        <h1>The End</h1>
+        <p>Any questions?</p>
+        <aside>(I may have left out a few details...)</aside>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-16.jpg">
+    <div>
+        <p>So yes, what <strong>is</strong> the <em>Standard Way</em>?</p>
+        </p>
+        <p>Let's have a look at what our MarkLogic, our Enterprise XML Database offers!</p>
+        <code><pre>$json:transform-to-json(
+    $node,
+    [$strategy]
+)</pre></code>
+        <p>They have a function that takes an XML node, and an optional strategy.</p>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-17.jpg">
+    <div>
+        <p>But what's meant by "strategy"? With a sinking feeling that perhaps <em>The Standard Way</em> might be a little more complicated than we hoped, we leaf through the documentation and see that it can be <code>basic</code>, <code>custom</code>, or <code>full</code>.</p>
+        <p>The last of these, "full", sounds the most Enterprisey, so let's try that!</p>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-18.jpg">
+    <div>
+        <p>When we convert our XML with the <code>full</code> strategy we get something that looks a little more verbose than what we sketched earlier:</p>
+        <code><pre>{"prog": {
+    "_attribute": {"id": 123},
+    "_children": [
+        {"title":
+            "_children": [
+                "Doctor Who &amp; the Teletubbies"
+                ...</pre></code>
+        <p>Still, it doesn't look too horrendous. But what's it like to work with in practice?</p>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-19.jpg">
+    <div>
+        <p>Remember that we were able to drill into our sketch JSON using a simple expression like <code>$json.prog.title</code>.</p>
+        <aside>(Viewers of a nervous disposition may wish to look away...)</aside>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-20.jpg">
+    <div>
+        <p>With this "full" data structure, we now have to do:</p>
+        <code><pre>$json.prog._children
+    .filter(child =&gt; "title" in child)
+    [0]
+    ._children
+    [0]</pre></code>
+        <p>Because XML nodes can contain a stream of arbitrary data, the JSON representation represents them as having a list of <code>_children</code>. So instead of simply descending a dictionary, we have to filter an array, and then descend the first result. Instead of just getting the title, we have to get its first child, and so on.</p>
+        <p>The fact that the most general, complete translation that MarkLogic can provide for XML turns up as JSON which is hard to work idiomatically gives us some interesting insight into the mismatch. Let's drill a bit deeper.</p>
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-21.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-22.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-23.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-24.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-25.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-26.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-27.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-28.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-29.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-30.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-31.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-32.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-33.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-34.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-35.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-36.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-37.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-38.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-39.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-40.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-41.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-42.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-43.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-44.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-45.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-46.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-47.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-48.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-49.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-50.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-51.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-52.jpg">
+    <div>
+        ...
+    </div>
+</section>
+
+<section>
+    <img src="images/xml2json/xml2json-53.jpg">
+    <div>
+        ...
+    </div>
+</section>
