@@ -60,6 +60,7 @@ section > div {
         background: rgba(240,220,170, 75%);
         padding: calc(1px + 1vh) 0.5em;
         height: 100vh;
+        padding: 2em;
     }
 }
 
